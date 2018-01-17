@@ -1,0 +1,13 @@
+{
+    "name": "cloes/realme-php-sdk",
+    "description": "This is a PHP SDK for realme",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "cloes",
+            "email": "wayne511200295@163.com"
+        }
+    ],
+    "require": {}
+}
