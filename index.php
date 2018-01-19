@@ -6,10 +6,11 @@
  * Time: 17:34
  */
 
+
 require_once('SAMLRequestEncoder.php');
 
-$SAMLRequestEncoder = new SAMLRequestEncoder('./saml.xml');
+$SAMLRequestEncoder = new SAMLRequestEncoder('./MTSSP_ArtefactBinding_Sample.xml','rsa-sha1');
 
-$SAMLRequestString = $SAMLRequestEncoder->getEncodedString();
+$SAMLRequestString = $SAMLRequestEncoder->getQueryString();
 
-var_dump($SAMLRequestString);
+echo $SAMLRequestString;
