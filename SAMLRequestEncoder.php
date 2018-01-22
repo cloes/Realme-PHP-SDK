@@ -8,6 +8,8 @@ class SAMLRequestEncoder{
     private $xmlFile;
     private $sigAlg;
 
+    private $idpUrl = "https://mts.realme.govt.nz/logon-mts/mtsEntryPoint?";
+
     const DSAwithSHA1 = 'http://www.w3.org/2000/09/xmldsig#dsa-sha1';
     const RSAwithSHA1 = 'http://www.w3.org/2000/09/xmldsig#rsa-sha1';
 
@@ -49,15 +51,22 @@ class SAMLRequestEncoder{
 
     private function getSignatureString($content, $sigAlg){
         $signature = $this->sign($content, $sigAlg);
-        $signatureString = 'Signature='.base64_encode($signature);
+        $signatureString = 'Signature='.urlencode(base64_encode($signature));
         return $signatureString;
     }
 
     private function getSAMLRequestString($xmlFile){
+
         $content = file_get_contents($xmlFile);
         if($content === false){
             throw new Exception("can not open xml file");
         }
+
+        date_default_timezone_set('UTC');
+        $issueInstant = date('Y-m-d') . 'T' . date('H:i:s') . 'Z';
+        $content = str_replace('{{UTC_TIME}}', $issueInstant, $content);
+
+        //file_put_contents('output3.txt',$content);
 
         $deflatedContent = gzdeflate($content);
 
@@ -80,7 +89,7 @@ class SAMLRequestEncoder{
 
         $result = $contentForSign.'&'.$signatureString;
 
-        return $result;
+        return $this->idpUrl . $result;
 
     }
 
