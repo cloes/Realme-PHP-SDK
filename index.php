@@ -9,7 +9,7 @@
 
 require_once('SAMLRequestEncoder.php');
 
-$SAMLRequestEncoder = new SAMLRequestEncoder('./output2.txt','rsa-sha1');
+$SAMLRequestEncoder = new SAMLRequestEncoder('./baseDecoded.txt','rsa-sha1');
 
 $SAMLRequestString = $SAMLRequestEncoder->getQueryString();
 
