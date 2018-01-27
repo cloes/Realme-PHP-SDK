@@ -1,3 +1,6 @@
+<?php
+
+$response = <<<EOD
 <saml:Assertion xmlns:saml="urn:oasis:names:tc:SAML:2.0:assertion" ID="s208b1e913d1cbc624cc460731a07d0a20029f0fe2" IssueInstant="2018-01-23T11:19:44Z" Version="2.0">
 <saml:Issuer>https://mts.realme.govt.nz/saml2</saml:Issuer><ds:Signature xmlns:ds="http://www.w3.org/2000/09/xmldsig#">
 <ds:SignedInfo>
@@ -53,3 +56,45 @@ JPsnOwYNA0BljHk=
 </saml:AudienceRestriction>
 </saml:Conditions>
 <saml:AuthnStatement AuthnInstant="2018-01-23T11:19:44Z" SessionIndex="s217b46f7dc993c8eca69f20759bead732962ddb01"><saml:AuthnContext><saml:AuthnContextClassRef>urn:nzl:govt:ict:stds:authn:deployment:GLS:SAML:2.0:ac:classes:ModStrength</saml:AuthnContextClassRef></saml:AuthnContext></saml:AuthnStatement></saml:Assertion>
+EOD;
+
+
+$dom = new DOMDocument();
+$dom->loadXML($response);
+$doc = $dom->documentElement;
+$xpath = new DOMXpath($dom);
+
+//$xpath->registerNamespace('samlp', 'urn:oasis:names:tc:SAML:2.0:protocol');
+//$xpath->registerNamespace('saml', 'urn:oasis:names:tc:SAML:2.0:assertion');
+
+
+$xpath->registerNamespace('saml', 'urn:oasis:names:tc:SAML:2.0:assertion');
+$xpath->registerNamespace('ds', 'http://www.w3.org/2000/09/xmldsig#');
+
+
+$tmp = $xpath->query('/saml:Assertion/saml:Subject/saml:NameID', $doc);
+echo $tmp[0]->textContent;
+exit;
+
+foreach ($xpath->query('/saml:Assertion/saml:Subject/saml:NameID', $doc) as $attr) {
+    var_dump($attr->textContent);
+
+    /*
+    echo " # Attribute: " . $attr->getAttribute('Name') . "<br/>";
+    foreach ($xpath->query('saml:AttributeValue', $attr) as $value) {
+        echo "   Value: " . $value->textContent . "<br/>";
+    }
+    */
+}
+
+//https://stackoverflow.com/questions/31099829/retrieve-attributes-and-nameid-from-a-saml-response-xml?rq=1
+
+
+/*
+foreach ($xpath->query('/samlp:Response/saml:Assertion/saml:AttributeStatement/saml:Attribute', $doc) as $attr) {
+    echo " # Attribute: " . $attr->getAttribute('Name') . "<br/>";
+    foreach ($xpath->query('saml:AttributeValue', $attr) as $value) {
+        echo "   Value: " . $value->textContent . "<br/>";
+    }
+}
+*/

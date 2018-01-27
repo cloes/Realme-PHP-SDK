@@ -10,7 +10,7 @@ $pkeyid = openssl_pkey_get_private(file_get_contents('mts_saml_sp.pem'));
 
 openssl_private_decrypt($baseDecodedContent, $decryptedAESKey, $pkeyid);
 
-var_dump($decryptedAESKey);
+//var_dump($decryptedAESKey);
 
 $AESContent = base64_decode(file_get_contents('aes_content.txt'));
 
@@ -20,18 +20,27 @@ $iv = substr($AESContent,0,16);
 
 $realAESContent = substr($AESContent,16);
 
-echo strlen($realAESContent);
-
 $result = openssl_decrypt($realAESContent,'AES-128-CBC',$decryptedAESKey,OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,$iv);
 
 //$result = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $decryptedAESKey, $realAESContent, MCRYPT_MODE_CBC, $iv);
 
+//$result = substr($result,0,strrpos($result,'>') + 1);
+
+$result = substr($result,0,strrpos($result,'>') + 1);
+
 file_put_contents('result',$result);
 
-$simplexml = simplexml_load_file('result');
+$simplexml = simplexml_load_string($result);
 
-echo $simplexml->getName();
+$json = json_encode($simplexml);
+$array = json_decode($json,TRUE);
+
+//var_dump($simplexml->NameID->attributes());
+
+//print_r($simplexml->NameID->attributes());
 
 header("Content-type: text/html; charset=utf-8"); 
 
-var_dump($result);
+var_dump($array);
+
+//var_dump($result);
