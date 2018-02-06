@@ -20,13 +20,19 @@ $iv = substr($AESContent,0,16);
 
 $realAESContent = substr($AESContent,16);
 
+echo strlen($realAESContent);
+
+//$result = openssl_decrypt($realAESContent,'AES-128-CBC',$decryptedAESKey,OPENSSL_RAW_DATA,$iv);
 $result = openssl_decrypt($realAESContent,'AES-128-CBC',$decryptedAESKey,OPENSSL_RAW_DATA | OPENSSL_ZERO_PADDING,$iv);
 
 //$result = mcrypt_decrypt(MCRYPT_RIJNDAEL_128, $decryptedAESKey, $realAESContent, MCRYPT_MODE_CBC, $iv);
 
 //$result = substr($result,0,strrpos($result,'>') + 1);
 
-$result = substr($result,0,strrpos($result,'>') + 1);
+$paddingLen = ord($result[strlen($result)-1]);
+$result = substr($result,0, strlen($result)-$paddingLen);
+
+//$result = substr($result,0,strrpos($result,'>') + 1);
 
 file_put_contents('result',$result);
 
